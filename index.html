@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SkidProt — Dashboard</title>
+
+<!-- Google font (optional) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg-1: #020617;
+    --bg-2: #07102a;
+    --glass: rgba(255,255,255,0.05);
+    --muted: #9aa4b2;
+    --accent: #4f46e5; /* indigo-blue */
+    --accent-2:#60a5fa;
+  }
+  html,body,#root{height:100%}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    background: radial-gradient(circle at 10% 10%, #07102a 0%, #020617 30%, #000000 100%);
+    color:#e6eef8;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    overflow-y:auto;
+  }
+
+  /* page layout */
+  .wrap{min-height:100vh;display:flex;flex-direction:column;}
+  header{
+    position:sticky;top:0;z-index:40;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 28px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    border-bottom:1px solid rgba(255,255,255,0.03);
+    backdrop-filter: blur(8px);
+  }
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{
+    width:44px;height:44px;border-radius:10px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    box-shadow:0 6px 22px rgba(79,70,229,0.18), inset 0 -6px 18px rgba(0,0,0,0.25);
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:white;
+    font-size:18px;
+  }
+  .brand h1{margin:0;font-size:18px;letter-spacing:0.2px}
+  nav{display:flex;gap:18px;align-items:center}
+  nav a{color:var(--muted);text-decoration:none;padding:8px;border-radius:8px;transition:all .18s}
+  nav a:hover{color:white;background:rgba(255,255,255,0.03)}
+  .cta{background:linear-gradient(90deg,var(--accent),#2563eb);padding:8px 14px;border-radius:9px;color:white;font-weight:600;box-shadow:0 10px 30px rgba(79,70,229,0.18)}
+  main{flex:1;padding:48px 28px;display:flex;flex-direction:column;gap:28px;align-items:center}
+
+  /* hero */
+  .hero{max-width:1100px;width:100%;display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center}
+  .hero-left{}
+  .h-title{font-size:40px;line-height:1.02;margin:0 0 12px;background:linear-gradient(90deg,var(--accent-2),#b0c7ff);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
+  .h-sub{color:var(--muted);margin:0 0 22px;max-width:58ch}
+  .big-actions{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{
+    padding:12px 18px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+    color:white;font-weight:600;cursor:pointer;transition:all .18s;backdrop-filter: blur(6px)
+  }
+  .btn.primary{background:linear-gradient(90deg,var(--accent),#2563eb);box-shadow:0 12px 30px rgba(79,70,229,0.18)}
+  .btn.ghost{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.03)}
+  .hero-right{background:var(--glass);border:1px solid rgba(255,255,255,0.06);padding:18px;border-radius:14px;backdrop-filter:blur(10px)}
+
+  /* grid cards */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:10px;width:100%}
+  .card{
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.04);
+    padding:20px;border-radius:12px;
+    box-shadow:0 6px 22px rgba(0,0,0,0.5);
+    transition:transform .22s,box-shadow .22s;
+  }
+  .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(79,70,229,0.12)}
+  .card h3{margin:0;font-size:18px;color:#dbeafe}
+  .stat{font-size:28px;font-weight:700;margin-top:8px}
+
+  /* lower area */
+  .content{max-width:1100px;width:100%;display:flex;gap:18px;align-items:flex-start}
+  .left-col{flex:1}
+  .right-col{width:340px}
+
+  /* mini panels */
+  .panel{background:rgba(255,255,255,0.02);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(8px)}
+  .muted{color:var(--muted);font-size:13px}
+
+  /* table look */
+  .table{width:100%;border-collapse:collapse;margin-top:10px}
+  .table th,.table td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03)}
+  .tiny{font-size:13px;color:var(--muted)}
+
+  footer{padding:18px;border-top:1px solid rgba(255,255,255,0.03);text-align:center;color:var(--muted);font-size:13px}
+
+  /* responsive */
+  @media (max-width:980px){
+    .hero{grid-template-columns:1fr}
+    .cards{grid-template-columns:repeat(2,1fr)}
+    .right-col{width:100%}
+  }
+  @media (max-width:640px){
+    .cards{grid-template-columns:1fr}
+  }
+
+  /* tiny utils */
+  .tiny-muted{font-size:12px;color:var(--muted)}
+  .kbd{background:rgba(255,255,255,0.02);border-radius:6px;padding:6px 8px;font-size:13px;border:1px solid rgba(255,255,255,0.03)}
+</style>
+</head>
+<body>
+<div class="wrap" id="root">
+  <header>
+    <div class="brand">
+      <div class="logo">SP</div>
+      <div>
+        <h1>SkidProt</h1>
+        <div class="tiny-muted">Control panel</div>
+      </div>
+    </div>
+
+    <nav>
+      <a href="/" id="nav-home">Home</a>
+      <a href="/dashboard" id="nav-dashboard">Dashboard</a>
+      <a href="/settings" id="nav-settings">Settings</a>
+      <button class="cta btn" id="loginBtn">Login</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-left">
+        <h2 class="h-title" id="hero-title">SkidProt — Protection & Monitoring</h2>
+        <p class="h-sub">Lightweight protection dashboard. Save settings, generate API keys and view basic stats. Works without a backend or with Supabase for persistence.</p>
+
+        <div class="big-actions">
+          <button class="btn primary" id="goto-dashboard">Go to Dashboard</button>
+          <button class="btn ghost" id="show-quick">Quick Save (local)</button>
+          <button class="btn" id="gen-key">Generate API Key</button>
+        </div>
+
+        <div class="cards" style="margin-top:18px">
+          <div class="card">
+            <h3>Active Users</h3>
+            <div class="stat" id="stat-users">—</div>
+            <div class="muted">Realtime users tracked</div>
+          </div>
+          <div class="card">
+            <h3>API Calls</h3>
+            <div class="stat" id="stat-calls">—</div>
+            <div class="muted">Calls this session</div>
+          </div>
+          <div class="card">
+            <h3>Uptime</h3>
+            <div class="stat" id="stat-uptime">—</div>
+            <div class="muted">Service availability</div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hero-right">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="tiny-muted">Account</div>
+          <div><span class="kbd" id="apikey-badge">no-key</span></div>
+        </div>
+
+        <div style="margin-bottom:12px">
+          <div class="muted">Quick actions</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn" id="btn-save">Save snapshot</button>
+            <button class="btn" id="btn-load">Load</button>
+          </div>
+        </div>
+
+        <div style="margin-top:14px">
+          <div class="muted">Storage</div>
+          <div class="tiny-muted" id="storageMode">localStorage</div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="content">
+      <div class="left-col">
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h3 style="margin:0">Logs</h3>
+            <div class="tiny-muted">recent events</div>
+          </div>
+          <table class="table" id="log-table" style="margin-top:10px">
+            <thead><tr><th>Time</th><th>Event</th></tr></thead>
+            <tbody id="log-body">
+              <!-- logs -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="right-col">
+        <div class="panel" style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="muted">Connection</div>
+              <div id="conn-status">offline</div>
+            </div>
+            <div>
+              <div class="muted">Backend</div>
+              <div id="backend-target">none</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="muted">Quick Controls</div>
+          <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+            <button class="btn" id="clear-logs">Clear logs</button>
+            <button class="btn" id="toggle-storage">Use Supabase (requires env)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2025 SkidProt. All rights reserved.</footer>
+</div>
+
+<script>
+/* =========================
+   Minimal client logic
+   - Local fallback storage (localStorage)
+   - Optional server (Vercel) via /api/save (POST)
+   - Very small, single-file, no libs
+   ========================= */
+
+const state = {
+  users: 123,
+  calls: 4567,
+  uptime: "99.9%",
+  storage: 'local', // 'local' or 'remote'
+  apiKey: null,
+  logs: []
+};
+
+const el = id => document.getElementById(id);
+const saveToLocal = () => {
+  const snapshot = { users: state.users, calls: state.calls, uptime: state.uptime, time: Date.now() };
+  localStorage.setItem('skidprot_snapshot', JSON.stringify(snapshot));
+  pushLog('Saved snapshot to localStorage');
+  renderStats();
+};
+const loadFromLocal = () => {
+  const raw = localStorage.getItem('skidprot_snapshot');
+  if (!raw) { pushLog('No snapshot found'); return; }
+  const s = JSON.parse(raw);
+  state.users = s.users; state.calls = s.calls; state.uptime = s.uptime;
+  pushLog('Loaded snapshot from localStorage');
+  renderStats();
+};
+const pushLog = (txt) => {
+  const t = new Date().toLocaleString();
+  state.logs.unshift({t,txt});
+  if (state.logs.length > 200) state.logs.pop();
+  renderLogs();
+};
+const renderLogs = () => {
+  const body = el('log-body'); body.innerHTML = '';
+  for (const row of state.logs) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td class="tiny-muted">'+row.t+'</td><td>'+row.txt+'</td>';
+    body.appendChild(tr);
+  }
+};
+const renderStats = () => {
+  el('stat-users').textContent = state.users;
+  el('stat-calls').textContent = state.calls;
+  el('stat-uptime').textContent = state.uptime;
+  el('apikey-badge').textContent = state.apiKey ? state.apiKey.slice(0,10)+'...' : 'no-key';
+};
+const setBackendMode = (mode) => {
+  state.storage = mode;
+  el('storageMode').textContent = mode === 'remote' ? 'Supabase via /api/save' : 'localStorage';
+  el('backend-target').textContent = mode === 'remote' ? 'remote (api/save)' : 'none';
+  pushLog('Storage mode set: '+mode);
+};
+
+// generate API key (dummy) and show
+const generateKey = () => {
+  const k = 'sk_' + Math.random().toString(36).slice(2,16);
+  state.apiKey = k;
+  pushLog('Generated API key');
+  renderStats();
+};
+
+// try to save remotely via /api/save (serverless function)
+async function remoteSave() {
+  try {
+    const payload = { users: state.users, calls: state.calls, uptime: state.uptime, apiKey: state.apiKey, time: Date.now() };
+    const res = await fetch('/api/save', {
+      method: 'POST',
+      headers: {'content-type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Network save failed: '+res.status);
+    const j = await res.json();
+    pushLog('Remote save OK: ' + (j.message || 'saved'));
+  } catch (err) {
+    pushLog('Remote save error: ' + err.message);
+  }
+}
+
+// toggles storage mode
+el('toggle-storage').addEventListener('click', ()=> {
+  if (state.storage === 'local') setBackendMode('remote');
+  else setBackendMode('local');
+});
+
+// attach buttons
+el('btn-save').addEventListener('click', ()=> {
+  if (state.storage === 'remote') remoteSave();
+  else saveToLocal();
+});
+el('btn-load').addEventListener('click', ()=> {
+  if (state.storage === 'remote') pushLog('Remote load not implemented in demo');
+  else loadFromLocal();
+});
+el('show-quick').addEventListener('click', ()=> { saveToLocal(); });
+el('gen-key').addEventListener('click', ()=> { generateKey(); });
+el('clear-logs').addEventListener('click', ()=> { state.logs=[]; renderLogs(); pushLog('Cleared logs'); });
+el('goto-dashboard').addEventListener('click', ()=> { pushLog('Open dashboard (placeholder)'); });
+
+el('loginBtn').addEventListener('click', ()=> {
+  const p = prompt('Enter passphrase (demo):');
+  if (p === 'admin') { pushLog('Logged in as admin'); el('loginBtn').textContent='Admin'; } else pushLog('Login failed');
+});
+
+// initial rendering
+renderStats();
+renderLogs();
+pushLog('App initialized (local mode)');
+
+/* Small demo stat tick to show animated feel */
+setInterval(()=> {
+  state.calls += Math.round(Math.random()*3);
+  renderStats();
+}, 1500);
+</script>
+</body>
+</html>
